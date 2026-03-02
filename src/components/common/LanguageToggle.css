@@ -1,0 +1,31 @@
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  transition: all 0.2s ease;
+}
+
+.language-toggle:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.lang-option {
+  transition: color 0.2s;
+}
+
+.lang-active {
+  color: var(--color-primary);
+}
+
+.lang-divider {
+  color: var(--color-text-light);
+  opacity: 0.4;
+}

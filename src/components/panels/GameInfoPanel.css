@@ -1,0 +1,191 @@
+.game-info-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+}
+
+.turn-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.turn-red {
+  background: var(--color-red-piece-light);
+  color: var(--color-red-piece);
+  border: 2px solid var(--color-red-piece);
+}
+
+.turn-black {
+  background: var(--color-black-piece-light);
+  color: var(--color-black-piece);
+  border: 2px solid var(--color-black-piece);
+}
+
+.turn-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.turn-red .turn-dot {
+  background: var(--color-red-piece);
+}
+
+.turn-black .turn-dot {
+  background: var(--color-black-piece);
+}
+
+.turn-number {
+  font-size: 14px;
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.check-warning {
+  background: var(--color-danger);
+  color: white;
+  padding: 6px 16px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.winner-panel {
+  padding: 24px;
+  text-align: center;
+}
+
+.winner-emoji {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.winner-text {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Action buttons row */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-surrender {
+  padding: 4px 14px;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-text-light);
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.btn-surrender:hover {
+  opacity: 1;
+  background: var(--color-danger);
+  color: white;
+  border-color: var(--color-danger);
+}
+
+.btn-draw {
+  padding: 4px 14px;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-text-light);
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.btn-draw:hover {
+  opacity: 1;
+  background: var(--color-secondary);
+  color: white;
+  border-color: var(--color-secondary);
+}
+
+/* Draw dialog */
+.draw-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--color-card);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.draw-dialog-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.draw-dialog-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-draw-accept {
+  padding: 6px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-secondary);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-draw-accept:hover {
+  background: #6AB5A5;
+}
+
+.btn-draw-reject {
+  padding: 6px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-danger);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-draw-reject:hover {
+  background: var(--color-red-piece-dark);
+}
+
+.draw-pending {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  padding: 4px 12px;
+}

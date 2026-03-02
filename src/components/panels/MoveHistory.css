@@ -1,0 +1,65 @@
+.move-history {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.move-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.move-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.move-red {
+  background: rgba(232, 85, 109, 0.05);
+}
+
+.move-black {
+  background: rgba(91, 107, 138, 0.05);
+}
+
+.move-number {
+  color: var(--color-text-light);
+  font-size: 12px;
+  min-width: 24px;
+}
+
+.move-piece-name {
+  font-weight: 700;
+}
+
+.text-red {
+  color: var(--color-red-piece);
+}
+
+.text-black {
+  color: var(--color-black-piece);
+}
+
+.move-notation {
+  color: var(--color-text);
+  font-family: monospace;
+  font-size: 12px;
+}

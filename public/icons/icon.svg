@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="92" fill="#FDF6EC"/>
+
+  <!-- Board -->
+  <rect x="106" y="116" width="300" height="300" rx="20" fill="#E8D5BC"/>
+  <rect x="116" y="126" width="280" height="280" rx="15" fill="#F5E6D3"/>
+
+  <!-- Grid lines -->
+  <g stroke="#C4A882" stroke-width="2" opacity="0.5">
+    <line x1="146" y1="156" x2="366" y2="156"/>
+    <line x1="146" y1="229" x2="366" y2="229"/>
+    <line x1="146" y1="302" x2="366" y2="302"/>
+    <line x1="146" y1="376" x2="366" y2="376"/>
+    <line x1="146" y1="156" x2="146" y2="376"/>
+    <line x1="219" y1="156" x2="219" y2="376"/>
+    <line x1="293" y1="156" x2="293" y2="376"/>
+    <line x1="366" y1="156" x2="366" y2="376"/>
+  </g>
+
+  <!-- Red piece (bottom-left) -->
+  <circle cx="219" cy="338" r="42" fill="#E8556D" stroke="#C43E54" stroke-width="3"/>
+  <!-- Crown -->
+  <path d="M 195 330 L 201 310 L 212 322 L 219 304 L 226 322 L 237 310 L 243 330 Z" fill="#FFD166"/>
+  <circle cx="219" cy="308" r="4" fill="#FF6B6B"/>
+
+  <!-- Black piece (top-right) -->
+  <circle cx="293" cy="193" r="42" fill="#5B6B8A" stroke="#3D4A63" stroke-width="3"/>
+  <!-- Sword -->
+  <line x1="293" y1="166" x2="293" y2="214" stroke="#C8D5E8" stroke-width="5" stroke-linecap="round"/>
+  <line x1="280" y1="185" x2="306" y2="185" stroke="#C8D5E8" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Sparkles -->
+  <g fill="#FFD166">
+    <polygon points="380,140 385,152 397,152 387,160 391,172 380,164 369,172 373,160 363,152 375,152"/>
+  </g>
+  <g fill="#B088F9">
+    <polygon points="142,388 146,397 155,397 148,403 150,412 142,406 134,412 136,403 129,397 138,397"/>
+  </g>
+
+  <!-- Title -->
+  <text x="256" y="468" text-anchor="middle" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="36" font-weight="800" fill="#4A3728">Chess+</text>
+</svg>

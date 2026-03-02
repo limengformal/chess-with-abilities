@@ -1,0 +1,36 @@
+.captured-pieces {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.captured-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.captured-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.captured-label {
+  font-size: 12px;
+}
+
+.captured-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.captured-piece {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}

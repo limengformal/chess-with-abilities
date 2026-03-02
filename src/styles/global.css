@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  /* Cute pastel palette */
+  --color-bg: #FFF8F0;
+  --color-board: #F5E6D3;
+  --color-board-line: #C4A882;
+  --color-board-shadow: rgba(180, 150, 120, 0.3);
+  --color-river: #E8F4F8;
+  --color-river-wave: #B8DDE6;
+
+  /* Piece colors */
+  --color-red-piece: #E8556D;
+  --color-red-piece-light: #FFEEF1;
+  --color-red-piece-dark: #C43E54;
+  --color-black-piece: #5B6B8A;
+  --color-black-piece-light: #EEF1F6;
+  --color-black-piece-dark: #3D4A63;
+
+  /* Terrain / board surface */
+  --color-board-frame: #E8D5BC;
+  --color-terrain-center: #F5E6D3;
+  --color-terrain-edge: #E8D5BC;
+  --color-dot: #C4A882;
+  --color-palace-red-glow: rgba(255, 209, 102, 0.15);
+  --color-palace-black-glow: rgba(176, 136, 249, 0.12);
+  --color-river-deep: #A8D4E4;
+  --color-river-light: #E8F4F8;
+  --color-decor: #D4B896;
+
+  /* UI colors */
+  --color-primary: #E8556D;
+  --color-primary-light: #FFB3C1;
+  --color-secondary: #7EC8B8;
+  --color-accent: #FFD166;
+  --color-accent-glow: rgba(255, 209, 102, 0.5);
+  --color-text: #4A4A4A;
+  --color-text-light: #8A8A8A;
+  --color-success: #7EC8B8;
+  --color-warning: #FFD166;
+  --color-danger: #E8556D;
+  --color-card: #FFFFFF;
+  --color-card-shadow: rgba(0, 0, 0, 0.08);
+
+  /* Move indicators */
+  --color-legal-move: rgba(126, 200, 184, 0.6);
+  --color-selected: rgba(255, 209, 102, 0.4);
+  --color-last-move: rgba(232, 85, 109, 0.15);
+  --color-check: rgba(232, 85, 109, 0.3);
+
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-round: 50%;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+  /* Typography */
+  --font-main: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-chinese: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: var(--font-main);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+/* Cute button styles */
+.btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--color-red-piece-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #6AB5A5;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* Animations */
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.1); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes float-up {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes slide-in-top {
+  0% { transform: translateY(-100px); opacity: 0; }
+  60% { transform: translateY(10px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-2px); }
+  30%, 70% { transform: translateX(2px); }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-wiggle {
+  animation: wiggle 0.3s ease;
+}
+
+.animate-shake {
+  animation: shake 0.3s ease;
+}
+
+.animate-slide-in {
+  animation: slide-in-top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========== Board Themes ========== */
+
+/* Classic is the default (no override needed) */
+
+.theme-desert {
+  --color-bg: #FFF3E0;
+  --color-board: #E8C87A;
+  --color-board-line: #A0845C;
+  --color-board-shadow: rgba(160, 132, 92, 0.3);
+  --color-river: #B8E0F0;
+  --color-river-wave: #5BA3C9;
+  --color-card: #FFF8EE;
+  --color-board-frame: #D4B06A;
+  --color-terrain-center: #F0D8A0;
+  --color-terrain-edge: #D4B06A;
+  --color-dot: #A0845C;
+  --color-river-deep: #6DBDE0;
+  --color-river-light: #C8E8F4;
+  --color-decor: #C4A060;
+}
+
+.theme-grassland {
+  --color-bg: #F0FFF0;
+  --color-board: #A8D5A0;
+  --color-board-line: #5C8A52;
+  --color-board-shadow: rgba(92, 138, 82, 0.3);
+  --color-river: #87CEEB;
+  --color-river-wave: #5BA3C9;
+  --color-card: #F5FFF5;
+  --color-board-frame: #8BC48A;
+  --color-terrain-center: #C8E8C0;
+  --color-terrain-edge: #8BC48A;
+  --color-dot: #5C8A52;
+  --color-river-deep: #6DB8D8;
+  --color-river-light: #CCE8F0;
+  --color-decor: #6BA860;
+}
+
+.theme-night {
+  --color-bg: #1A1A2E;
+  --color-board: #2D2D4A;
+  --color-board-line: #6A6A9A;
+  --color-board-shadow: rgba(40, 40, 80, 0.5);
+  --color-river: #1E3A5F;
+  --color-river-wave: #3A6B9F;
+  --color-text: #E0E0E0;
+  --color-text-light: #A0A0C0;
+  --color-card: #2A2A44;
+  --color-card-shadow: rgba(0, 0, 0, 0.3);
+  --color-primary-light: #8A4A5A;
+  --color-legal-move: rgba(100, 180, 160, 0.5);
+  --color-selected: rgba(200, 170, 80, 0.3);
+  --color-last-move: rgba(180, 80, 100, 0.2);
+  --color-board-frame: #3A3A5E;
+  --color-terrain-center: #2D2D4A;
+  --color-terrain-edge: #22223A;
+  --color-dot: #6A6A9A;
+  --color-palace-red-glow: rgba(255, 180, 80, 0.10);
+  --color-palace-black-glow: rgba(140, 100, 220, 0.10);
+  --color-river-deep: #2A5080;
+  --color-river-light: #1E3A5F;
+  --color-decor: #5A5A8A;
+}
