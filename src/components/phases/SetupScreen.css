@@ -140,6 +140,22 @@
   color: var(--color-text);
 }
 
+.theme-card-locked {
+  opacity: 0.55;
+  position: relative;
+}
+
+.theme-card-locked:hover {
+  border-color: var(--color-accent);
+}
+
+.theme-lock {
+  font-size: 14px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
 /* Mode buttons */
 .setup-modes {
   display: flex;

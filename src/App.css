@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
+  padding: 8px 24px;
   background: white;
   box-shadow: var(--shadow-sm);
   position: sticky;
@@ -36,6 +36,28 @@
   font-size: 18px;
   font-weight: 800;
   color: var(--color-text);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-upgrade-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-accent), #FFB347);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.header-upgrade-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .app-main {

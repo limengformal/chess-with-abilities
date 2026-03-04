@@ -1,0 +1,133 @@
+.store-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.store-modal {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.store-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  font-size: 18px;
+  color: var(--color-text-light);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.store-close:hover {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.store-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.store-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.store-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.store-item-bundle {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.1), rgba(255, 179, 71, 0.1));
+}
+
+.store-item-purchased {
+  opacity: 0.6;
+}
+
+.store-item-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.store-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.store-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.store-item-desc {
+  font-size: 12px;
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.store-item-action {
+  flex-shrink: 0;
+}
+
+.store-buy-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.store-purchased-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-success);
+  padding: 6px 12px;
+  background: rgba(126, 200, 184, 0.15);
+  border-radius: var(--radius-sm);
+}
+
+.store-restore {
+  display: block;
+  margin: 20px auto 0;
+  background: none;
+  color: var(--color-text-light);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  padding: 6px 12px;
+}
+
+.store-restore:hover {
+  color: var(--color-text);
+}

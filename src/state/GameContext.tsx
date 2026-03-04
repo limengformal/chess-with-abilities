@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useReducer, useMemo, useState, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useReducer, useMemo, useEffect, useRef } from 'react';
 import { GameState, GamePhase, Side, PlayerType } from '../types';
 import { createInitialBoard } from '../core/board';
 import { gameReducer, GameAction } from './gameReducer';
-import { Locale, createTranslator } from '../i18n/i18n';
+import { Locale } from '../i18n/i18n';
 import { getAIBanAction, getAIPickActions, getAITurnActions } from '../ai/aiPlayer';
 import { evaluateBoard } from '../ai/evaluate';
+import { useSettings } from './SettingsContext';
 
 function createInitialGameState(): GameState {
   return {
@@ -47,9 +48,7 @@ const GameContext = createContext<GameContextType>(null!);
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialGameState);
-  const [locale, setLocale] = useState<Locale>('en');
-  const t = useMemo(() => createTranslator(locale), [locale]);
-  const toggleLocale = useCallback(() => setLocale(l => l === 'en' ? 'zh' : 'en'), []);
+  const { locale, t, toggleLocale } = useSettings();
   const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // AI auto-play

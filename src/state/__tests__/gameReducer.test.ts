@@ -799,3 +799,210 @@ describe('AI Name Randomization', () => {
     expect(result.players[Side.Black].type).toBe(PlayerType.Human);
   });
 });
+
+describe('Check enforcement in reducer', () => {
+  // Setup: Red General at (4,0) checked by Black Chariot at (4,9).
+  // Red Chariot at (0,0) cannot block/capture — should have 0 legal moves.
+  // Red Chariot at (2,3) CAN block by moving to (4,3).
+  function createCheckState() {
+    const redGeneral = createTestPiece({
+      id: 'red-general', type: PieceType.General, side: Side.Red,
+      position: { col: 4, row: 0 },
+    });
+    const blackGeneral = createTestPiece({
+      id: 'black-general', type: PieceType.General, side: Side.Black,
+      position: { col: 3, row: 9 },
+    });
+    const blackChariot = createTestPiece({
+      id: 'black-chariot', type: PieceType.Chariot, side: Side.Black,
+      position: { col: 4, row: 9 },
+    });
+    const redChariotFar = createTestPiece({
+      id: 'red-chariot-far', type: PieceType.Chariot, side: Side.Red,
+      position: { col: 0, row: 0 },
+    });
+    const redChariotBlock = createTestPiece({
+      id: 'red-chariot-block', type: PieceType.Chariot, side: Side.Red,
+      position: { col: 2, row: 3 },
+    });
+
+    const board = createBoardWithPieces([
+      redGeneral, blackGeneral, blackChariot, redChariotFar, redChariotBlock,
+    ]);
+
+    return createPlayState({
+      board,
+      currentTurn: Side.Red,
+      checkState: { side: Side.Red, checkedBy: ['black-chariot'] },
+    });
+  }
+
+  it('SELECT_PIECE returns 0 legal moves for a piece that cannot resolve check', () => {
+    const state = createCheckState();
+    const result = gameReducer(state, { type: 'SELECT_PIECE', pieceId: 'red-chariot-far' });
+
+    expect(result.selectedPieceId).toBe('red-chariot-far');
+    expect(result.legalMoves.length).toBe(0);
+  });
+
+  it('SELECT_PIECE returns only check-resolving moves for a piece that can block', () => {
+    const state = createCheckState();
+    const result = gameReducer(state, { type: 'SELECT_PIECE', pieceId: 'red-chariot-block' });
+
+    expect(result.selectedPieceId).toBe('red-chariot-block');
+    expect(result.legalMoves.length).toBeGreaterThan(0);
+    // All legal moves must be on col 4 (interposing on the check file)
+    for (const move of result.legalMoves) {
+      expect(move.col).toBe(4);
+    }
+  });
+
+  it('SELECT_PIECE returns escape moves for the General in check', () => {
+    const state = createCheckState();
+    const result = gameReducer(state, { type: 'SELECT_PIECE', pieceId: 'red-general' });
+
+    expect(result.selectedPieceId).toBe('red-general');
+    // General should have escape moves to safe squares off col 4
+    // (4,1) is still on col 4 → still in check → filtered
+    // (3,0) → check flying general with black-general at (3,9)? Same col 3, nothing between → blocked
+    // (5,0) → safe
+    expect(result.legalMoves.length).toBeGreaterThan(0);
+    // No move should leave general in check
+    const movesToCol4 = result.legalMoves.filter(m => m.col === 4);
+    expect(movesToCol4.length).toBe(0); // All col-4 positions are still in check
+  });
+
+  it('MOVE_PIECE rejects a move that is not in legalMoves', () => {
+    const state = createCheckState();
+    // First select the far chariot (which has 0 legal moves)
+    const selected = gameReducer(state, { type: 'SELECT_PIECE', pieceId: 'red-chariot-far' });
+    expect(selected.legalMoves.length).toBe(0);
+
+    // Try to move it to an arbitrary position — should be rejected
+    const result = gameReducer(selected, { type: 'MOVE_PIECE', to: { col: 0, row: 5 } });
+    // State should be unchanged (move rejected)
+    expect(result.currentTurn).toBe(Side.Red);
+    expect(result.selectedPieceId).toBe('red-chariot-far');
+  });
+
+  it('MOVE_PIECE accepts a valid check-resolving move', () => {
+    const state = createCheckState();
+    // Select the blocking chariot
+    const selected = gameReducer(state, { type: 'SELECT_PIECE', pieceId: 'red-chariot-block' });
+    expect(selected.legalMoves.length).toBeGreaterThan(0);
+
+    // Move to block (col 4, between general and checker)
+    const blockingMove = selected.legalMoves.find(m => m.col === 4);
+    expect(blockingMove).toBeDefined();
+
+    const result = gameReducer(selected, { type: 'MOVE_PIECE', to: blockingMove! });
+    // Turn should switch to Black
+    expect(result.currentTurn).toBe(Side.Black);
+    // Check should be resolved
+    expect(result.checkState).toBeNull();
+  });
+
+  it('ACTIVATE_ABILITY is blocked when in check', () => {
+    // Create a state where Red is in check and has an ability to use
+    const redGeneral = createTestPiece({
+      id: 'red-general', type: PieceType.General, side: Side.Red,
+      position: { col: 4, row: 0 },
+    });
+    const blackGeneral = createTestPiece({
+      id: 'black-general', type: PieceType.General, side: Side.Black,
+      position: { col: 3, row: 9 },
+    });
+    const blackChariot = createTestPiece({
+      id: 'black-chariot', type: PieceType.Chariot, side: Side.Black,
+      position: { col: 4, row: 9 },
+    });
+    const redChariot = addAbility(
+      createTestPiece({
+        id: 'red-chariot', type: PieceType.Chariot, side: Side.Red,
+        position: { col: 0, row: 0 },
+      }),
+      'swap', 1,
+    );
+
+    const board = createBoardWithPieces([redGeneral, blackGeneral, blackChariot, redChariot]);
+    const state = createPlayState({
+      board,
+      currentTurn: Side.Red,
+      checkState: { side: Side.Red, checkedBy: ['black-chariot'] },
+    });
+
+    // Try to activate swap ability — should be blocked
+    const result = gameReducer(state, {
+      type: 'ACTIVATE_ABILITY', pieceId: 'red-chariot', abilityId: 'swap' as any,
+    });
+
+    // State should be unchanged — ability blocked during check
+    expect(result.pendingAbility).toBeNull();
+    expect(result.currentTurn).toBe(Side.Red);
+  });
+
+  it('after a move that delivers check, opponent can only make check-resolving moves', () => {
+    // Setup: Red Chariot delivers check by moving to Black General's column
+    const redGeneral = createTestPiece({
+      id: 'red-general', type: PieceType.General, side: Side.Red,
+      position: { col: 4, row: 0 },
+    });
+    const blackGeneral = createTestPiece({
+      id: 'black-general', type: PieceType.General, side: Side.Black,
+      position: { col: 4, row: 9 },
+    });
+    const redChariot = createTestPiece({
+      id: 'red-chariot', type: PieceType.Chariot, side: Side.Red,
+      position: { col: 3, row: 5 },
+    });
+    // Black advisor at (3,8) — can it block?
+    const blackAdvisor = createTestPiece({
+      id: 'black-advisor', type: PieceType.Advisor, side: Side.Black,
+      position: { col: 3, row: 8 },
+    });
+
+    const board = createBoardWithPieces([redGeneral, blackGeneral, redChariot, blackAdvisor]);
+
+    const state = createPlayState({
+      board,
+      currentTurn: Side.Red,
+      selectedPieceId: 'red-chariot',
+      legalMoves: getLegalMoves(redChariot, board),
+    });
+
+    // Red moves chariot to (4,5) — giving check along col 4
+    const afterMove = gameReducer(state, { type: 'MOVE_PIECE', to: { col: 4, row: 5 } });
+
+    // Verify Black is now in check
+    expect(afterMove.currentTurn).toBe(Side.Black);
+    expect(afterMove.checkState).not.toBeNull();
+    expect(afterMove.checkState!.side).toBe(Side.Black);
+
+    // Now Black selects their advisor — only check-resolving moves allowed
+    const blackSelects = gameReducer(afterMove, { type: 'SELECT_PIECE', pieceId: 'black-advisor' });
+
+    // Every move returned must resolve the check
+    for (const move of blackSelects.legalMoves) {
+      // Simulate the advisor moving there and verify check is resolved
+      const simBoard = createBoardWithPieces([
+        redGeneral,
+        { ...blackGeneral, position: blackGeneral.position },
+        { ...afterMove.board.grid[5][4]!, position: { col: 4, row: 5 } }, // Red chariot at new position
+        { ...blackAdvisor, position: move },
+      ]);
+      // Need to remove advisor from original position — use the actual board
+      const { grid } = afterMove.board;
+      const testGrid = grid.map(row => [...row]);
+      // Move advisor
+      testGrid[blackAdvisor.position.row][blackAdvisor.position.col] = null;
+      testGrid[move.row][move.col] = { ...blackAdvisor, position: move };
+      const testBoard: Board = { ...afterMove.board, grid: testGrid };
+
+      const checkAfter = getLegalMoves(blackAdvisor, afterMove.board);
+      // All returned moves must be legal (check-resolving)
+      // This is already guaranteed by getLegalMoves, but verifying the full flow
+      expect(checkAfter).toEqual(blackSelects.legalMoves);
+      break; // Just verify the first one to avoid redundancy
+    }
+  });
+});

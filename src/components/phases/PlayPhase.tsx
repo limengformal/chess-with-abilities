@@ -4,12 +4,14 @@ import { MoveHistory } from '../panels/MoveHistory';
 import { CapturedPieces } from '../panels/CapturedPieces';
 import { AbilityPanel } from '../panels/AbilityPanel';
 import { AbilityLog } from '../panels/AbilityLog';
+import { AdBanner } from '../store/AdBanner';
 import './PlayPhase.css';
 
 export function PlayPhase() {
   return (
     <div className="play-phase">
       <GameInfoPanel />
+      <AdBanner variant="leaderboard" />
       <div className="play-layout">
         <div className="play-side-panel play-side-left">
           <AbilityPanel />

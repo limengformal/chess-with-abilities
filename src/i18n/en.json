@@ -108,5 +108,19 @@
   "theme.classic": "Classic",
   "theme.desert": "Desert",
   "theme.grassland": "Grassland",
-  "theme.night": "Night"
+  "theme.night": "Night",
+  "store.title": "Premium",
+  "store.removeAds": "Remove Ads",
+  "store.removeAds.desc": "Enjoy ad-free gameplay forever",
+  "store.unlockThemes": "All Themes",
+  "store.unlockThemes.desc": "Unlock Desert, Grassland & Night themes",
+  "store.bundle": "Bundle Deal",
+  "store.bundle.desc": "Remove ads + all themes — best value!",
+  "store.price.noAds": "$0.99",
+  "store.price.themes": "$1.99",
+  "store.price.bundle": "$2.49",
+  "store.purchased": "Owned",
+  "store.restore": "Restore Purchases",
+  "ad.placeholder": "Ad",
+  "ad.removeAds": "Remove Ads"
 }
