@@ -20,11 +20,12 @@ export interface AIMove {
 export function generateAllMoves(board: Board, side: Side, capturedPieces: PieceInstance[]): AIMove[] {
   const moves: AIMove[] = [];
   const pieces = getPiecesForSide(board, side);
+  const inCheck = isInCheck(board, side) !== null;
 
   for (const piece of pieces) {
     if (piece.isFrozen) continue;
 
-    // Regular moves
+    // Regular moves (always generated — already check-filtered by getLegalMoves)
     const legalMoves = getLegalMoves(piece, board);
     for (const to of legalMoves) {
       const target = getPieceAt(board, to);
@@ -38,7 +39,8 @@ export function generateAllMoves(board: Board, side: Side, capturedPieces: Piece
       });
     }
 
-    // Active abilities
+    // Active abilities — skip if in check (must resolve check with a move)
+    if (inCheck) continue;
     const activeAbilities = getActiveAbilities(piece);
     for (const { abilityId } of activeAbilities) {
       const targets = getActiveAbilityTargets(board, piece, abilityId!, capturedPieces);

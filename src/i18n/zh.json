@@ -108,5 +108,19 @@
   "theme.classic": "经典",
   "theme.desert": "沙漠",
   "theme.grassland": "草原",
-  "theme.night": "夜晚"
+  "theme.night": "夜晚",
+  "store.title": "高级版",
+  "store.removeAds": "去除广告",
+  "store.removeAds.desc": "永久享受无广告游戏体验",
+  "store.unlockThemes": "全部主题",
+  "store.unlockThemes.desc": "解锁沙漠、草原和夜晚主题",
+  "store.bundle": "超值套装",
+  "store.bundle.desc": "去除广告 + 全部主题 — 最划算！",
+  "store.price.noAds": "¥6",
+  "store.price.themes": "¥12",
+  "store.price.bundle": "¥15",
+  "store.purchased": "已拥有",
+  "store.restore": "恢复购买",
+  "ad.placeholder": "广告",
+  "ad.removeAds": "去除广告"
 }

@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px;
+  padding: 4px;
   perspective: 800px;
   perspective-origin: 50% 40%;
   position: relative;
@@ -40,14 +40,15 @@
 }
 
 .board-svg {
+  display: block;
   width: 100%;
-  max-width: 720px;
   height: auto;
+  margin: 0 auto;
   border-radius: var(--radius-lg);
   background: transparent;
   user-select: none;
   -webkit-user-select: none;
-  transform: rotateX(5deg);
+  transform: rotateX(3deg);
   transform-style: preserve-3d;
 }
 

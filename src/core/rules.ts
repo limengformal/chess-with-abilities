@@ -32,7 +32,7 @@ export function findGeneral(board: Board, side: Side): PieceInstance | null {
  * Check if a piece has active Fortify (charges available AND stationary 2+ turns).
  * Inlined to avoid importing from abilities.ts (circular dependency risk).
  */
-function hasActiveFortify(piece: PieceInstance): boolean {
+export function hasActiveFortify(piece: PieceInstance): boolean {
   const fortify = piece.abilities.find(
     a => a.abilityId === 'fortify' && (a.chargesRemaining > 0 || a.chargesRemaining === -1)
   );
@@ -87,13 +87,7 @@ export function getLegalMoves(piece: PieceInstance, board: Board): Position[] {
 
     // After this move, our general must not be in check
     const check = isInCheck(newBoard, piece.side);
-    if (check) {
-      // General moving resets fortifyTurnsStationary, so Fortify cannot apply
-      if (piece.type === PieceType.General) continue;
-      // For other pieces: if General has active Fortify, check is survivable
-      const general = findGeneral(newBoard, piece.side);
-      if (!general || !hasActiveFortify(general)) continue;
-    }
+    if (check) continue;
 
     // Flying general rule must not be violated
     if (isGeneralsFacing(newBoard)) continue;
@@ -106,12 +100,20 @@ export function getLegalMoves(piece: PieceInstance, board: Board): Position[] {
 
 /**
  * Check if a side is in checkmate (in check with no legal moves).
+ * Exception: if the general has active Fortify, it can survive the capture,
+ * so it's not true checkmate — the game continues.
  */
 export function isCheckmate(board: Board, side: Side): boolean {
   const check = isInCheck(board, side);
   if (!check) return false;
 
-  return !hasAnyLegalMove(board, side);
+  if (hasAnyLegalMove(board, side)) return false;
+
+  // No legal moves — but Fortify can save the general from capture
+  const general = findGeneral(board, side);
+  if (general && hasActiveFortify(general)) return false;
+
+  return true;
 }
 
 /**
@@ -127,7 +129,7 @@ export function isStalemate(board: Board, side: Side): boolean {
 /**
  * Check if a side has any legal move available.
  */
-function hasAnyLegalMove(board: Board, side: Side): boolean {
+export function hasAnyLegalMove(board: Board, side: Side): boolean {
   const pieces = getPiecesForSide(board, side);
   for (const piece of pieces) {
     const moves = getLegalMoves(piece, board);

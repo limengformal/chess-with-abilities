@@ -4,7 +4,7 @@ import {
   PieceAbilityAssignment, createAbilityInstance, AbilityLogEntry, BoardTheme,
 } from '../types';
 import { createInitialBoard, cloneBoard, findPieceById, getPieceAt } from '../core/board';
-import { getLegalMoves, isInCheck, isCheckmate, isStalemate } from '../core/rules';
+import { getLegalMoves, isInCheck, isCheckmate, isStalemate, findGeneral, hasActiveFortify, hasAnyLegalMove } from '../core/rules';
 import { ALL_ABILITIES, getAbilityById } from '../core/abilityDefs';
 import {
   processCaptureAbilities,
@@ -314,6 +314,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'ACTIVATE_ABILITY': {
       if (state.phase !== GamePhase.Play) return state;
       if (state.pendingAbility) return state;
+      // Can't use abilities when in check — must resolve check with a move
+      if (state.checkState && state.checkState.side === state.currentTurn) return state;
 
       const piece = findPieceById(state.board, action.pieceId);
       if (!piece) return state;
@@ -413,6 +415,29 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const newLogs: AbilityLogEntry[] = result.abilityLog.map(l => ({
         ...l, turnNumber: state.turnNumber,
       }));
+
+      // --- Treasure check for abilities that place pieces on new squares ---
+      // (teleport, shadow-step, resurrect, swap)
+      const bannedIds = getBannedAbilityIds(state);
+      const pieceAtTarget = getPieceAt(result.board, action.target);
+      if (pieceAtTarget) {
+        const treasureResult = checkTreasurePoint(result.board, pieceAtTarget, bannedIds);
+        result.board = treasureResult.board;
+        for (const log of treasureResult.abilityLog) {
+          newLogs.push({ ...log, turnNumber: state.turnNumber });
+        }
+      }
+      // For swap, also check the caster's original position (where the swap target lands)
+      if (abilityId === 'swap') {
+        const pieceAtCasterOrigin = getPieceAt(result.board, piece.position);
+        if (pieceAtCasterOrigin) {
+          const treasureResult2 = checkTreasurePoint(result.board, pieceAtCasterOrigin, bannedIds);
+          result.board = treasureResult2.board;
+          for (const log of treasureResult2.abilityLog) {
+            newLogs.push({ ...log, turnNumber: state.turnNumber });
+          }
+        }
+      }
 
       // Remove restored pieces from captured list
       let newCapturedPieces = state.capturedPieces;
@@ -658,6 +683,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         winner = state.currentTurn;
       }
 
+      // Handle rare case: in check, no legal moves, but Fortify saves the general.
+      // Consume one Fortify charge and skip the stuck player's turn.
+      let fortifySaved = false;
+      if (checkState && !winner) {
+        const generalInCheck = findGeneral(currentBoard, nextSide);
+        if (generalInCheck && hasActiveFortify(generalInCheck) && !hasAnyLegalMove(currentBoard, nextSide)) {
+          fortifySaved = true;
+          // Consume one Fortify charge
+          const updatedAbilities = generalInCheck.abilities.map(a => {
+            if (a.abilityId === 'fortify' && a.chargesRemaining > 0) {
+              return { ...a, chargesRemaining: a.chargesRemaining - 1 };
+            }
+            return a;
+          });
+          const updatedGeneral = { ...generalInCheck, abilities: updatedAbilities };
+          currentBoard.grid[updatedGeneral.position.row][updatedGeneral.position.col] = updatedGeneral;
+          newAbilityLogs.push({
+            pieceId: generalInCheck.id,
+            abilityId: 'fortify',
+            messageKey: 'abilityLog.fortify',
+            turnNumber: state.turnNumber,
+          });
+        }
+      }
+
       const moveRecord: MoveRecord = {
         turnNumber: state.turnNumber,
         side: piece.side,
@@ -669,16 +719,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         abilitiesTriggered,
       };
 
+      // If Fortify saved the general, skip the stuck player's turn
+      const effectiveNextSide = fortifySaved ? state.currentTurn : nextSide;
+      const effectiveCheckState = fortifySaved ? isInCheck(currentBoard, effectiveNextSide) : checkState;
+
       return {
         ...state,
         phase: winner && !isGeneralCapture ? GamePhase.End : GamePhase.Play,
         board: currentBoard,
-        currentTurn: nextSide,
-        turnNumber: nextSide !== state.currentTurn && state.currentTurn === Side.Black
+        currentTurn: effectiveNextSide,
+        turnNumber: effectiveNextSide !== state.currentTurn && state.currentTurn === Side.Black
           ? state.turnNumber + 1 : state.turnNumber,
         moveHistory: [...state.moveHistory, moveRecord],
         capturedPieces: newCapturedPieces,
-        checkState,
+        checkState: effectiveCheckState,
         winner,
         selectedPieceId: null,
         legalMoves: [],

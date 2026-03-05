@@ -408,6 +408,48 @@ export function BoardCanvas() {
 
           {/* Piece blob gradient defs */}
           <PieceGradientDefs />
+
+          {/* Treasure chest gradients */}
+          <radialGradient id="treasureGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFD700" />
+            <stop offset="60%" stopColor="#FFA500" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#FF8C00" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="chestBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#CD853F" />
+            <stop offset="40%" stopColor="#8B5E3C" />
+            <stop offset="100%" stopColor="#5C3A1E" />
+          </linearGradient>
+          <linearGradient id="chestBodyRoyal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#5B3A8C" />
+            <stop offset="50%" stopColor="#3D2066" />
+            <stop offset="100%" stopColor="#2D1050" />
+          </linearGradient>
+          <radialGradient id="sapphireGem" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#6699FF" />
+            <stop offset="50%" stopColor="#2244AA" />
+            <stop offset="100%" stopColor="#111166" />
+          </radialGradient>
+          <linearGradient id="chestLid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFD700" />
+            <stop offset="50%" stopColor="#DAA520" />
+            <stop offset="100%" stopColor="#B8860B" />
+          </linearGradient>
+          <linearGradient id="chestTrim" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#DAA520" />
+            <stop offset="50%" stopColor="#FFD700" />
+            <stop offset="100%" stopColor="#DAA520" />
+          </linearGradient>
+          <radialGradient id="rubyGem" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#FF4444" />
+            <stop offset="50%" stopColor="#CC0000" />
+            <stop offset="100%" stopColor="#800000" />
+          </radialGradient>
+          <radialGradient id="emeraldGem" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#66FF66" />
+            <stop offset="50%" stopColor="#2E8B57" />
+            <stop offset="100%" stopColor="#1B5E20" />
+          </radialGradient>
         </defs>
 
         {/* ===== BOARD TERRAIN ===== */}
@@ -613,11 +655,70 @@ export function BoardCanvas() {
           const { x, y } = posToPixel(tp.position);
           return (
             <g key={`treasure-${i}`} className="treasure-marker">
-              <circle cx={x} cy={y} r={10} fill="var(--color-accent)" opacity={0.3}>
-                <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2s" repeatCount="indefinite" />
+              {/* Outer glow pulse */}
+              <circle cx={x} cy={y} r={16} fill="none" stroke="#FFD700" strokeWidth={1.2} opacity={0.25}>
+                <animate attributeName="r" values="14;20;14" dur="2.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.1;0.35;0.1" dur="2.5s" repeatCount="indefinite" />
               </circle>
-              <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle" fontSize={14}>🎁</text>
+              {/* Inner warm glow */}
+              <circle cx={x} cy={y} r={13} fill="url(#treasureGlow)" opacity={0.3}>
+                <animate attributeName="opacity" values="0.15;0.4;0.15" dur="2s" repeatCount="indefinite" />
+              </circle>
+              {/* Royal treasure chest — open, with coins spilling out */}
+              <g transform={`translate(${x - 12}, ${y - 12})`}>
+                {/* === Open lid tilted back === */}
+                <rect x={2} y={0} width={20} height={7} rx={1.5} fill="url(#chestLid)" stroke="#8B6914" strokeWidth={0.7} transform="rotate(-8, 12, 7)" />
+                {/* Lid gold trim */}
+                <rect x={2} y={0} width={20} height={1.5} rx={1} fill="#FFE87C" stroke="#DAA520" strokeWidth={0.3} transform="rotate(-8, 12, 7)" />
+                {/* Lid inner decorative line */}
+                <line x1={4} y1={4} x2={20} y2={3} stroke="#B8860B" strokeWidth={0.4} opacity={0.5} />
+
+                {/* === Chest body (royal purple) === */}
+                <rect x={1} y={9} width={22} height={14} rx={1.5} fill="url(#chestBodyRoyal)" stroke="#2D1B69" strokeWidth={0.8} />
+                {/* Gold rim at top opening */}
+                <rect x={0.5} y={8} width={23} height={2.5} rx={1} fill="url(#chestTrim)" stroke="#8B6914" strokeWidth={0.6} />
+                {/* Gold horizontal band */}
+                <rect x={1} y={16} width={22} height={1.5} fill="url(#chestTrim)" stroke="#8B6914" strokeWidth={0.3} />
+                {/* Gold bottom edge */}
+                <rect x={1} y={21} width={22} height={1.5} rx={0.8} fill="url(#chestTrim)" stroke="#8B6914" strokeWidth={0.3} />
+                {/* Vertical gold straps */}
+                <rect x={6} y={9} width={1} height={14} fill="#DAA520" opacity={0.5} />
+                <rect x={17} y={9} width={1} height={14} fill="#DAA520" opacity={0.5} />
+
+                {/* Gold coins spilling from open top */}
+                <circle cx={7} cy={8.5} r={2.3} fill="#FFD700" stroke="#B8860B" strokeWidth={0.5} />
+                <circle cx={12} cy={7.5} r={2.5} fill="#FFE44D" stroke="#B8860B" strokeWidth={0.5} />
+                <circle cx={17} cy={8.5} r={2.3} fill="#FFD700" stroke="#B8860B" strokeWidth={0.5} />
+                {/* Coin $ marks */}
+                <text x={7} y={9.5} fontSize={2.5} fill="#B8860B" textAnchor="middle" fontWeight="bold">$</text>
+                <text x={12} y={8.5} fontSize={2.5} fill="#B8860B" textAnchor="middle" fontWeight="bold">$</text>
+                <text x={17} y={9.5} fontSize={2.5} fill="#B8860B" textAnchor="middle" fontWeight="bold">$</text>
+                {/* Coin shine highlights */}
+                <circle cx={6} cy={7.5} r={0.6} fill="#FFFDE0" opacity={0.9} />
+                <circle cx={11} cy={6.5} r={0.7} fill="#FFFDE0" opacity={0.9} />
+                <circle cx={16} cy={7.5} r={0.6} fill="#FFFDE0" opacity={0.9} />
+
+                {/* Center ruby gem with gold setting */}
+                <circle cx={12} cy={14} r={2.5} fill="#FFD700" stroke="#8B6914" strokeWidth={0.5} />
+                <circle cx={12} cy={14} r={1.7} fill="url(#rubyGem)" />
+                <circle cx={11.3} cy={13.3} r={0.5} fill="#FF9999" opacity={0.8} />
+                {/* Side sapphire gems */}
+                <ellipse cx={6} cy={19} rx={1.3} ry={1.1} fill="url(#sapphireGem)" stroke="#1A237E" strokeWidth={0.3} />
+                <ellipse cx={18} cy={19} rx={1.3} ry={1.1} fill="url(#sapphireGem)" stroke="#1A237E" strokeWidth={0.3} />
+                {/* Corner rivets */}
+                <circle cx={3} cy={10.5} r={0.8} fill="#FFE87C" stroke="#B8860B" strokeWidth={0.3} />
+                <circle cx={21} cy={10.5} r={0.8} fill="#FFE87C" stroke="#B8860B" strokeWidth={0.3} />
+                <circle cx={3} cy={21} r={0.8} fill="#FFE87C" stroke="#B8860B" strokeWidth={0.3} />
+                <circle cx={21} cy={21} r={0.8} fill="#FFE87C" stroke="#B8860B" strokeWidth={0.3} />
+
+                {/* Sparkles */}
+                <path d="M21,2 L21.6,0 L22.2,2 L24,2.6 L22.2,3.2 L21.6,5.2 L21,3.2 L19,2.6Z" fill="#FFF8DC" opacity={0.9}>
+                  <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
+                </path>
+                <path d="M-1,5 L-0.6,3.8 L-0.2,5 L1,5.3 L-0.2,5.7 L-0.6,6.8 L-1,5.7 L-2.2,5.3Z" fill="#FFE4B5" opacity={0.7}>
+                  <animate attributeName="opacity" values="0.2;0.9;0.2" dur="2s" begin="0.5s" repeatCount="indefinite" />
+                </path>
+              </g>
             </g>
           );
         })}

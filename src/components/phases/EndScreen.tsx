@@ -4,6 +4,7 @@ import { Side, PieceType } from '../../types';
 import { PIECE_NAMES } from '../../core/constants';
 import { getAbilityById } from '../../core/abilityDefs';
 import { BoardCanvas } from '../board/BoardCanvas';
+import { AdBanner } from '../store/AdBanner';
 import './EndScreen.css';
 
 interface ConfettiPiece {
@@ -160,6 +161,7 @@ export function EndScreen() {
       {/* Rematch button */}
       {showButton && (
         <div className="end-actions">
+          <AdBanner />
           <button
             className="btn btn-primary btn-rematch"
             onClick={() => dispatch({ type: 'RESET_GAME' })}

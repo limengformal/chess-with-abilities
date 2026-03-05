@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGame } from '../../state/GameContext';
+import { useSettings } from '../../state/SettingsContext';
 import { BoardTheme } from '../../types';
 import './SetupScreen.css';
 
@@ -12,6 +13,7 @@ const THEMES: { id: BoardTheme; emoji: string }[] = [
 
 export function SetupScreen() {
   const { dispatch, t } = useGame();
+  const { settings, openStore } = useSettings();
   const [redName, setRedName] = useState('');
   const [blackName, setBlackName] = useState('');
   const [selectedTheme, setSelectedTheme] = useState<BoardTheme>('classic');
@@ -24,6 +26,15 @@ export function SetupScreen() {
       redName: redName.trim() || undefined,
       blackName: blackName.trim() || undefined,
     });
+  };
+
+  const handleThemeClick = (themeId: BoardTheme) => {
+    const isPremium = themeId !== 'classic';
+    if (isPremium && !settings.themesUnlocked) {
+      openStore();
+    } else {
+      setSelectedTheme(themeId);
+    }
   };
 
   return (
@@ -62,16 +73,21 @@ export function SetupScreen() {
       <div className="setup-theme">
         <label className="theme-label">{t('setup.theme')}</label>
         <div className="theme-cards">
-          {THEMES.map(theme => (
-            <button
-              key={theme.id}
-              className={`theme-card ${selectedTheme === theme.id ? 'theme-card-active' : ''}`}
-              onClick={() => setSelectedTheme(theme.id)}
-            >
-              <span className="theme-emoji">{theme.emoji}</span>
-              <span className="theme-name">{t(`theme.${theme.id}`)}</span>
-            </button>
-          ))}
+          {THEMES.map(theme => {
+            const isPremium = theme.id !== 'classic';
+            const isLocked = isPremium && !settings.themesUnlocked;
+            return (
+              <button
+                key={theme.id}
+                className={`theme-card ${selectedTheme === theme.id ? 'theme-card-active' : ''} ${isLocked ? 'theme-card-locked' : ''}`}
+                onClick={() => handleThemeClick(theme.id)}
+              >
+                <span className="theme-emoji">{theme.emoji}</span>
+                <span className="theme-name">{t(`theme.${theme.id}`)}</span>
+                {isLocked && <span className="theme-lock">🔒</span>}
+              </button>
+            );
+          })}
         </div>
       </div>
 

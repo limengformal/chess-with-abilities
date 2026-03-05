@@ -2,46 +2,57 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  max-width: 1100px;
+  gap: 4px;
+  padding: 4px 16px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .play-layout {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   justify-content: center;
   align-items: flex-start;
 }
 
 .play-board-area {
-  flex: 0 0 auto;
+  /* Board targets ~80% of viewport width, but height-capped to avoid
+     excessive scroll on landscape screens.
+     Board aspect: 560:620 (w:h). Available height ≈ 100dvh - 130px.
+     Width from height = (100dvh - 130px) * 560/620.
+     Pick the smaller of 80vw vs height-derived width. */
+  width: min(80vw, calc((100dvh - 130px) * 560 / 620), 1000px);
+  flex-shrink: 0;
 }
 
 .play-side-panel {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-width: 180px;
-  max-width: 220px;
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 200px;
 }
 
 .play-side-left {
-  min-width: 180px;
-  max-width: 220px;
+  max-width: 200px;
 }
 
-@media (max-width: 900px) {
+/* Stack layout when viewport is too narrow for board + side panels */
+@media (max-width: 1100px) {
   .play-layout {
     flex-direction: column;
     align-items: center;
   }
 
+  .play-board-area {
+    width: min(95vw, calc((100dvh - 170px) * 560 / 620), 800px);
+  }
+
   .play-side-panel {
     flex-direction: row;
-    min-width: auto;
     max-width: 100%;
     width: 100%;
   }
@@ -52,6 +63,7 @@
 
   .play-side-left {
     order: 1;
+    max-width: 100%;
   }
 
   .play-board-area {
